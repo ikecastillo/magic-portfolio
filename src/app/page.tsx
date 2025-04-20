@@ -1,12 +1,13 @@
 import React from "react";
 
-import { Heading, Flex, Text, Button, Avatar, RevealFx, Arrow, Column } from "@/once-ui/components";
+import { Heading, Flex, Text, Button, RevealFx, Column, Icon } from "@/once-ui/components";
 import { Projects } from "@/components/work/Projects";
+import { AboutSection } from "@/components/AboutSection";
+import { ExpertiseSection } from "@/components/ExpertiseSection";
+import { RecognitionSection } from "@/components/RecognitionSection";
 
 import { baseURL, routes } from "@/app/resources";
-import { home, about, person, newsletter } from "@/app/resources/content";
-import { Mailchimp } from "@/components";
-import { Posts } from "@/components/blog/Posts";
+import { home, about, person, expertise, work, recognition } from "@/app/resources/content";
 
 export async function generateMetadata() {
   const title = home.title;
@@ -50,70 +51,74 @@ export default function Home() {
             name: home.title,
             description: home.description,
             url: `https://${baseURL}`,
-            image: `${baseURL}/og?title=${encodeURIComponent(home.title)}`,
             publisher: {
               "@type": "Person",
               name: person.name,
-              image: {
-                "@type": "ImageObject",
-                url: `${baseURL}${person.avatar}`,
-              },
             },
           }),
         }}
       />
-      <Column fillWidth paddingY="l" gap="m">
+      <Column fillWidth paddingY="xl" gap="l">
         <Column maxWidth="s">
           <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="m">
             <Heading wrap="balance" variant="display-strong-l">
               {home.headline}
             </Heading>
           </RevealFx>
-          <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="m">
+          <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="l">
             <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
               {home.subline}
             </Text>
           </RevealFx>
           <RevealFx translateY="12" delay={0.4} horizontal="start">
-            <Button
-              id="about"
-              data-border="rounded"
-              href="/about"
-              variant="secondary"
-              size="m"
-              arrowIcon
-            >
-              <Flex gap="8" vertical="center">
-                {about.avatar.display && (
-                  <Avatar
-                    style={{ marginLeft: "-0.75rem", marginRight: "0.25rem" }}
-                    src={person.avatar}
-                    size="m"
-                  />
-                )}
-                {about.title}
-              </Flex>
-            </Button>
+            <Flex gap="16" wrap="wrap">
+              {home.cta1_link && home.cta1_label && (
+                <Button
+                  href={home.cta1_link}
+                  variant="primary"
+                  size="m"
+                  target="_blank"
+                  download
+                  prefixIcon={<Icon name="download" />}
+                >
+                  {home.cta1_label}
+                </Button>
+              )}
+              {home.cta2_link && home.cta2_label && (
+                <Button
+                  href={home.cta2_link}
+                  variant="secondary"
+                  size="m"
+                  suffixIcon={<Icon name="arrow-right" />}
+                >
+                  {home.cta2_label}
+                </Button>
+              )}
+            </Flex>
           </RevealFx>
         </Column>
       </Column>
-      <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
-      </RevealFx>
-      {routes["/blog"] && (
-        <Flex fillWidth gap="24" mobileDirection="column">
-          <Flex flex={1} paddingLeft="l">
-            <Heading as="h2" variant="display-strong-xs" wrap="balance">
-              Latest from the blog
-            </Heading>
-          </Flex>
-          <Flex flex={3} paddingX="20">
-            <Posts range={[1, 2]} columns="2" />
-          </Flex>
+      <Column id="about-me" as="section" fillWidth paddingY="xl" gap="l">
+        <Heading as="h2" variant="display-strong-m">{about.title}</Heading>
+        <AboutSection />
+      </Column>
+      <Column id="expertise" as="section" fillWidth paddingY="xl" gap="l">
+        <Heading as="h2" variant="display-strong-m">{expertise.title}</Heading>
+        <ExpertiseSection />
+      </Column>
+      <Column id="case-studies" as="section" fillWidth paddingY="xl" gap="l">
+        <Heading as="h2" variant="display-strong-m">{work.title}</Heading>
+        <Projects range={[1, 3]} columns={3} />
+        <Flex fillWidth horizontal="center" paddingTop="l">
+          <Button href="/work" variant="secondary">View All Case Studies</Button>
         </Flex>
+      </Column>
+      {recognition.display && (
+        <Column id="recognition" as="section" fillWidth paddingY="xl" gap="l">
+          <Heading as="h2" variant="display-strong-m">{recognition.title}</Heading>
+          <RecognitionSection />
+        </Column>
       )}
-      <Projects range={[2]} />
-      {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );
 }

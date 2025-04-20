@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import {
   AvatarGroup,
   Carousel,
@@ -8,6 +9,7 @@ import {
   Heading,
   SmartLink,
   Text,
+  Badge,
 } from "@/once-ui/components";
 
 interface ProjectCardProps {
@@ -19,6 +21,7 @@ interface ProjectCardProps {
   description: string;
   avatars: { src: string }[];
   link: string;
+  tags?: string[];
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -29,62 +32,86 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   description,
   avatars,
   link,
+  tags = [],
 }) => {
   return (
-    <Column fillWidth gap="m">
-      <Carousel
-        sizes="(max-width: 960px) 100vw, 960px"
-        images={images.map((image) => ({
-          src: image,
-          alt: title,
-        }))}
-      />
+    <Flex 
+      fillWidth 
+      border="neutral-medium"
+      radius="m"
+      overflow="hidden"
+      direction="column"
+      background="surface"
+      shadow="m"
+    >
+      {/* Image Section */}
+      {images.length > 0 && (
+        <Carousel
+          sizes="(max-width: 960px) 100vw, 960px"
+          images={images.map((image) => ({
+            src: image,
+            alt: title,
+          }))}
+          height={400} // Fixed height for consistency
+        />
+      )}
+      
+      {/* Content Section */}
       <Flex
-        mobileDirection="column"
+        direction="column"
         fillWidth
-        paddingX="s"
-        paddingTop="12"
-        paddingBottom="24"
-        gap="l"
+        padding="l"
+        gap="m"
       >
+        {/* Title */}
         {title && (
-          <Flex flex={5}>
-            <Heading as="h2" wrap="balance" variant="heading-strong-xl">
-              {title}
-            </Heading>
+          <Heading as="h2" wrap="balance" variant="heading-strong-xl">
+            {title}
+          </Heading>
+        )}
+        
+        {/* Description */}
+        {description?.trim() && (
+          <Text wrap="balance" variant="body-large-m" onBackground="neutral-weak">
+            {description}
+          </Text>
+        )}
+        
+        {/* Tags */}
+        {tags?.length > 0 && (
+          <Flex gap="8" wrap="wrap" paddingY="s">
+            {tags.map((tag, index) => (
+              <Badge key={index} variant="secondary" size="s">
+                {tag}
+              </Badge>
+            ))}
           </Flex>
         )}
-        {(avatars?.length > 0 || description?.trim() || content?.trim()) && (
-          <Column flex={7} gap="16">
-            {avatars?.length > 0 && <AvatarGroup avatars={avatars} size="m" reverse />}
-            {description?.trim() && (
-              <Text wrap="balance" variant="body-default-s" onBackground="neutral-weak">
-                {description}
-              </Text>
-            )}
-            <Flex gap="24" wrap>
-              {content?.trim() && (
-                <SmartLink
-                  suffixIcon="arrowRight"
-                  style={{ margin: "0", width: "fit-content" }}
-                  href={href}
-                >
-                  <Text variant="body-default-s">Read case study</Text>
-                </SmartLink>
-              )}
-              {link && (
-                <SmartLink
-                  suffixIcon="arrowUpRightFromSquare"
-                  style={{ margin: "0", width: "fit-content" }}
-                  href={link}
-                >
-                  <Text variant="body-default-s">View project</Text>
-                </SmartLink>
-              )}
-            </Flex>
-          </Column>
-        )}
+        
+        {/* Links */}
+        <Flex gap="24" wrap="wrap" paddingTop="m">
+          {content?.trim() && (
+            <SmartLink
+              suffixIcon="arrowRight"
+              style={{ margin: "0", width: "fit-content" }}
+              href={href}
+            >
+              <Text variant="body-default-m">Read case study</Text>
+            </SmartLink>
+          )}
+          {link && (
+            <SmartLink
+              suffixIcon="arrowUpRightFromSquare"
+              style={{ margin: "0", width: "fit-content" }}
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Text variant="body-default-m">View project</Text>
+            </SmartLink>
+          )}
+        </Flex>
       </Flex>
-    </Column>
+    </Flex>
   );
 };
